@@ -21,7 +21,7 @@ export default function Navbar() {
     };
 
     return (
-        <nav className=" py-4 px-8 shadow-md dark:bg-gray-800">
+        <nav className="w-full py-4 px-8 shadow-md bg-white dark:bg-gray-800 sticky top-0 z-50">
             <MaxWidthWrapper className="flex justify-between items-center">
                 <Link href="/">
                     <h1 className="text-2xl font-bold">ZC Bus</h1>
