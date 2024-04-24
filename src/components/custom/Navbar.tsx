@@ -23,8 +23,14 @@ export default function Navbar() {
     return (
         <nav className="w-full py-4 px-8 shadow-md bg-white dark:bg-gray-800 sticky top-0 z-50">
             <MaxWidthWrapper className="flex justify-between items-center">
-                <Link href="/">
-                    <h1 className="text-2xl font-bold">ZC Bus</h1>
+                <Link className="flex items-center" href="/">
+                    <Image
+                        src="/logo.png"
+                        alt="ZC Bus"
+                        width={40}
+                        height={40}
+                    />
+                    <h1 className="text-xl font-semibold">ZC Bus</h1>
                 </Link>
                 <div className="flex items-center space-x-4">
                     <Link href="/login">
