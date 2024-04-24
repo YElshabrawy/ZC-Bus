@@ -1,14 +1,11 @@
-import { Button } from '@/components/ui/button';
-import Image from 'next/image';
-import Link from 'next/link';
+'use client';
+import MaxWidthWrapper from '@/components/custom/MaxWidthWrapper';
 
 export default function Home() {
     return (
-        <div>
-            <h1>Home</h1>
-            <Link href="/login">
-                <Button>Go to Login</Button>
-            </Link>
-        </div>
+        <MaxWidthWrapper>
+            <h1 className="text-2xl font-bold">ZC Bus - Home</h1>
+            <p className="text-lg">Welcome to ZC Bus</p>
+        </MaxWidthWrapper>
     );
 }
