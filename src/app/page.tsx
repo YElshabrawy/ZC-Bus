@@ -57,9 +57,12 @@ export default function Home() {
                                 Subscribe to a bus route to get daily updates
                                 and notifications
                             </p>
-                            <Button className="mt-4 w-fit self-end">
-                                Subscribe
-                            </Button>
+                            <Link
+                                className="mt-4 w-fit self-end"
+                                href="/subscribe"
+                            >
+                                <Button>Subscribe</Button>
+                            </Link>
                         </CardContent>
                     </Card>
                     <Card x-chunk="dashboard-01-chunk-0" className="">

@@ -79,18 +79,6 @@ export default function Home() {
     }
     return (
         <>
-            <div className="mb-4">
-                <Card x-chunk="dashboard-01-chunk-0" className="">
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0">
-                        <CardTitle className="text-lg font-medium">
-                            Balance
-                        </CardTitle>
-                        <Badge variant="outline" color="primary">
-                            EGP 231.89
-                        </Badge>
-                    </CardHeader>
-                </Card>
-            </div>
             <Card className="">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-lg font-medium">

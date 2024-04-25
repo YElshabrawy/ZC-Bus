@@ -29,7 +29,7 @@ export default function RootLayout({
                     </BreadcrumbItem>
                     <BreadcrumbSeparator />
                     <BreadcrumbItem>
-                        <BreadcrumbPage>Reserve</BreadcrumbPage>
+                        <BreadcrumbPage>Subscribe</BreadcrumbPage>
                     </BreadcrumbItem>
                 </BreadcrumbList>
             </Breadcrumb>
