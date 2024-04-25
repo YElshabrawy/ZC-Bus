@@ -1,14 +1,6 @@
 'use client';
-import MaxWidthWrapper from '@/components/custom/MaxWidthWrapper';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import {
     Select,
@@ -19,14 +11,13 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { Ticket } from 'lucide-react';
-import { date, z } from 'zod';
+import { BusFrontIcon } from 'lucide-react';
+import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
@@ -38,33 +29,33 @@ const formSchema = z.object({
     route: z.string({
         required_error: 'Please select a route',
     }),
-    path: z.string({
-        required_error: 'Please select a path',
-    }),
-    seats: z.coerce.number().min(1).max(10),
-    date: z
+    email: z
         .string({
-            required_error: 'Please select a date',
+            required_error: 'Please enter your ZC email',
+            message: 'Please enter a valid ZC email address',
         })
-        .refine((value) => {
-            const selectedDate = new Date(value);
-            const currentDate = new Date();
-            selectedDate.setHours(0, 0, 0, 0);
-            currentDate.setHours(0, 0, 0, 0);
-            return selectedDate >= currentDate;
-        }, 'Date must be today or in the future'),
+        .email(),
+    sid: z.string({
+        required_error: 'Please enter your student ID',
+        message: 'Please enter a valid student ID',
+    }),
+    department: z.string({
+        required_error: 'Please enter your department',
+    }),
+    phone: z.string({
+        required_error: 'Please enter your phone number',
+        message: 'Please enter a valid phone number',
+    }),
 });
 export default function Home() {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
-        defaultValues: {
-            seats: 1,
-            date: new Date().toISOString().split('T')[0],
-        },
+        // defaultValues: {
+        //     seats: 1,
+        //     date: new Date().toISOString().split('T')[0],
+        // },
     });
     function onSubmit(values: z.infer<typeof formSchema>) {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
         console.log(values);
         toast({
             title: 'You submitted the following values:',
@@ -82,18 +73,16 @@ export default function Home() {
             <Card className="">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-lg font-medium">
-                        Reserve a Trip
+                        Subscribe to a Route
                     </CardTitle>
-                    <Ticket className="h-4 w-4 text-muted-foreground" />
+                    <BusFrontIcon className="h-4 w-4 text-muted-foreground" />
+                    {/* <Ticket className="h-4 w-4 text-muted-foreground" /> */}
                 </CardHeader>
                 <CardContent>
                     <Form {...form}>
                         <div className="">
-                            <form
-                                onSubmit={form.handleSubmit(onSubmit)}
-                                className="flex flex-col md:flex-row items-start md:space-x-6 space-y-6 md:space-y-0"
-                            >
-                                <div className="flex flex-col space-y-4 w-full md:w-2/3">
+                            <form onSubmit={form.handleSubmit(onSubmit)}>
+                                <div className="flex flex-col space-y-4 w-full">
                                     {/* Route Select */}
                                     <FormField
                                         control={form.control}
@@ -140,13 +129,51 @@ export default function Home() {
                                             </FormItem>
                                         )}
                                     />
-                                    {/* Path Select */}
+                                    {/* Email */}
                                     <FormField
                                         control={form.control}
-                                        name="path"
+                                        name="email"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Trip Path</FormLabel>
+                                                <FormLabel>Email</FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        placeholder="s-john.doe@zewailcity.edu.eg"
+                                                        {...field}
+                                                    />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    {/* Student ID */}
+                                    <FormField
+                                        control={form.control}
+                                        name="sid"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>
+                                                    Student ID
+                                                </FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        placeholder=""
+                                                        {...field}
+                                                    />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    {/* Department */}
+                                    <FormField
+                                        control={form.control}
+                                        name="department"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>
+                                                    Department
+                                                </FormLabel>
                                                 <Select
                                                     onValueChange={
                                                         field.onChange
@@ -155,21 +182,26 @@ export default function Home() {
                                                 >
                                                     <FormControl>
                                                         <SelectTrigger>
-                                                            <SelectValue placeholder="Select a path" />
+                                                            <SelectValue placeholder="Select a department" />
                                                         </SelectTrigger>
                                                     </FormControl>
                                                     <FormMessage />
-
                                                     <SelectContent>
                                                         <SelectGroup>
                                                             <SelectLabel>
-                                                                Path
+                                                                Departments
                                                             </SelectLabel>
-                                                            <SelectItem value="from">
-                                                                From University
+                                                            <SelectItem value="Engineering">
+                                                                Engineering
                                                             </SelectItem>
-                                                            <SelectItem value="to">
-                                                                To University
+                                                            <SelectItem value="Science">
+                                                                Science
+                                                            </SelectItem>
+                                                            <SelectItem value="Business">
+                                                                Business
+                                                            </SelectItem>
+                                                            <SelectItem value="CSAI">
+                                                                CSAI
                                                             </SelectItem>
                                                         </SelectGroup>
                                                     </SelectContent>
@@ -177,8 +209,29 @@ export default function Home() {
                                             </FormItem>
                                         )}
                                     />
-                                    {/* Seats Input */}
+                                    {/* Phone */}
                                     <FormField
+                                        control={form.control}
+                                        name="phone"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Phone</FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        placeholder=""
+                                                        {...field}
+                                                    />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    {/* Submit Button */}
+                                    <Button className="w-fit" type="submit">
+                                        Submit
+                                    </Button>
+                                    {/* Seats Input */}
+                                    {/* <FormField
                                         control={form.control}
                                         name="seats"
                                         render={({ field }) => (
@@ -191,76 +244,7 @@ export default function Home() {
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>
-                                        )}
-                                    />
-                                    {/* Date Picker */}
-                                    <FormField
-                                        control={form.control}
-                                        name="date"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Date</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        type="date"
-                                                        {...field}
-                                                    />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
-                                {/* divider */}
-                                <div className="self-center hidden md:block border-l border-gray-300 h-56" />
-                                {/* Recipt */}
-                                <div className="flex flex-col space-y-4 flex-grow w-full md:w-1/3 bg-gray-100 dark:bg-transparent p-4 rounded-md">
-                                    <h2 className="text-lg font-medium">
-                                        Reservation Recipt 💰
-                                    </h2>
-                                    <div className="flex flex-row justify-between">
-                                        <span>Route</span>
-                                        <span>
-                                            {form.watch('route') || 'N/A'}
-                                        </span>
-                                    </div>
-                                    <div className="flex flex-row justify-between">
-                                        <span>Path</span>
-                                        <span>
-                                            {form.watch('path') || 'N/A'}
-                                        </span>
-                                    </div>
-                                    <div className="flex flex-row justify-between">
-                                        <span>Seats</span>
-                                        {/* if int watch else return zero */}
-                                        <span>
-                                            {parseInt(
-                                                String(form.watch('seats'))
-                                            ) || 0}
-                                        </span>
-                                    </div>
-                                    <div className="flex flex-row justify-between">
-                                        <span>Date</span>
-                                        <span>
-                                            {form.watch('date') || 'N/A'}
-                                        </span>
-                                    </div>
-                                    {/* Summary */}
-                                    <div className="flex flex-row justify-between font-bold">
-                                        <span>Total</span>
-                                        <span>
-                                            EGP{' '}
-                                            {(parseInt(
-                                                String(form.watch('seats'))
-                                            ) || 0) * 60}
-                                        </span>
-                                    </div>
-                                    <Button
-                                        className="w-full self-end mt-auto"
-                                        type="submit"
-                                    >
-                                        Reserve
-                                    </Button>
+                                        )} */}
                                 </div>
                             </form>
                         </div>
