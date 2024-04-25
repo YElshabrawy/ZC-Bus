@@ -6,6 +6,7 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { Container } from 'postcss';
 import MaxWidthWrapper from '@/components/custom/MaxWidthWrapper';
 import Navbar from '@/components/custom/Navbar';
+import { Toaster } from '@/components/ui/toaster';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -37,6 +38,7 @@ export default function RootLayout({
                         <Navbar />
                         <div className="flex-grow flex-1">{children}</div>
                     </main>
+                    <Toaster />
                 </ThemeProvider>
             </body>
             {/* <body

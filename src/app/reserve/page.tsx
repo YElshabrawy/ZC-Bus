@@ -19,10 +19,63 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-// import { Input, Select } from '@/components/ui/form'; // Import Input and Select for the form
 import { Ticket } from 'lucide-react';
+import { date, z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import {
+    Form,
+    FormControl,
+    FormDescription,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from '@/components/ui/form';
+import { toast } from '@/components/ui/use-toast';
 
+const formSchema = z.object({
+    route: z.string({
+        required_error: 'Please select a route',
+    }),
+    path: z.string({
+        required_error: 'Please select a path',
+    }),
+    seats: z.coerce.number().min(1).max(10),
+    date: z
+        .string({
+            required_error: 'Please select a date',
+        })
+        .refine((value) => {
+            const selectedDate = new Date(value);
+            const currentDate = new Date();
+            selectedDate.setHours(0, 0, 0, 0);
+            currentDate.setHours(0, 0, 0, 0);
+            return selectedDate >= currentDate;
+        }, 'Date must be today or in the future'),
+});
 export default function Home() {
+    const form = useForm<z.infer<typeof formSchema>>({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            seats: 1,
+        },
+    });
+    function onSubmit(values: z.infer<typeof formSchema>) {
+        // Do something with the form values.
+        // ✅ This will be type-safe and validated.
+        console.log(values);
+        toast({
+            title: 'You submitted the following values:',
+            description: (
+                <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+                    <code className="text-white">
+                        {JSON.stringify(values, null, 2)}
+                    </code>
+                </pre>
+            ),
+        });
+    }
     return (
         <>
             <MaxWidthWrapper className="mt-8">
@@ -48,81 +101,136 @@ export default function Home() {
                         </CardTitle>
                         <Ticket className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
-                    <CardContent className="flex flex-col space-y-4">
-                        {/* Origin Input */}
-                        <div className="flex flex-col">
-                            <label
-                                htmlFor="origin"
-                                className="text-sm font-medium mb-1"
+                    <CardContent>
+                        <Form {...form}>
+                            <form
+                                onSubmit={form.handleSubmit(onSubmit)}
+                                className="flex flex-col space-y-4"
                             >
-                                Route
-                            </label>
-                            <Select>
-                                <SelectTrigger className="w-[180px]">
-                                    <SelectValue placeholder="Select a route" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectGroup>
-                                        <SelectLabel>Routes</SelectLabel>
-                                        <SelectItem value="S1">
-                                            S1 - Haram
-                                        </SelectItem>
-                                        <SelectItem value="S2">
-                                            S2 - Maadi
-                                        </SelectItem>
-                                        <SelectItem value="S3">
-                                            S3 - Shubra
-                                        </SelectItem>
-                                        <SelectItem value="S4">
-                                            S4 - Mohandessin
-                                        </SelectItem>
-                                        <SelectItem value="S5">
-                                            S5 - Nasr City
-                                        </SelectItem>
-                                    </SelectGroup>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        {/* Destination Input */}
-                        <div className="flex flex-col">
-                            <label
-                                htmlFor="path"
-                                className="text-sm font-medium mb-1"
-                            >
-                                Trip Path
-                            </label>
-                            <Select>
-                                <SelectTrigger className="w-[180px]">
-                                    <SelectValue placeholder="Select a path" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectGroup>
-                                        <SelectLabel>Path</SelectLabel>
-                                        <SelectItem value="from">
-                                            From University
-                                        </SelectItem>
-                                        <SelectItem value="to">
-                                            To University
-                                        </SelectItem>
-                                    </SelectGroup>
-                                </SelectContent>
-                            </Select>
-                            {/* <Select className="w-full">
-                                <option value="S5">S5 - Nasr City (To)</option>
-                                <option value="S1">S1 - Haram (From)</option>
-                            </Select> */}
-                        </div>
-                        {/* Datepicker (replace with your preferred datepicker component) */}
-                        <div className="flex flex-col">
-                            <label
-                                htmlFor="date"
-                                className="text-sm font-medium mb-1"
-                            >
-                                Date
-                            </label>
-                            <Input type="date" id="date" className="w-full" />
-                        </div>
-                        <Button className="mt-4 w-fit self-end">Reserve</Button>
+                                {/* Route Select */}
+                                <FormField
+                                    control={form.control}
+                                    name="route"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Route</FormLabel>
+                                            <Select
+                                                onValueChange={field.onChange}
+                                                value={field.value}
+                                            >
+                                                <FormControl>
+                                                    <SelectTrigger className="w-[180px]">
+                                                        <SelectValue placeholder="Select a route" />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <FormMessage />
+
+                                                <SelectContent>
+                                                    <SelectGroup>
+                                                        <SelectLabel>
+                                                            Routes
+                                                        </SelectLabel>
+                                                        <SelectItem value="S1">
+                                                            S1 - Haram
+                                                        </SelectItem>
+                                                        <SelectItem value="S2">
+                                                            S2 - Maadi
+                                                        </SelectItem>
+                                                        <SelectItem value="S3">
+                                                            S3 - Shubra
+                                                        </SelectItem>
+                                                        <SelectItem value="S4">
+                                                            S4 - Mohandessin
+                                                        </SelectItem>
+                                                        <SelectItem value="S5">
+                                                            S5 - Nasr City
+                                                        </SelectItem>
+                                                    </SelectGroup>
+                                                </SelectContent>
+                                            </Select>
+                                        </FormItem>
+                                    )}
+                                />
+                                {/* Path Select */}
+                                <FormField
+                                    control={form.control}
+                                    name="path"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Trip Path</FormLabel>
+                                            <Select
+                                                onValueChange={field.onChange}
+                                                value={field.value}
+                                            >
+                                                <FormControl>
+                                                    <SelectTrigger className="w-[180px]">
+                                                        <SelectValue placeholder="Select a path" />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <FormMessage />
+
+                                                <SelectContent>
+                                                    <SelectGroup>
+                                                        <SelectLabel>
+                                                            Path
+                                                        </SelectLabel>
+                                                        <SelectItem value="from">
+                                                            From University
+                                                        </SelectItem>
+                                                        <SelectItem value="to">
+                                                            To University
+                                                        </SelectItem>
+                                                    </SelectGroup>
+                                                </SelectContent>
+                                            </Select>
+                                        </FormItem>
+                                    )}
+                                />
+                                {/* Seats Input */}
+                                <FormField
+                                    control={form.control}
+                                    name="seats"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>
+                                                Number of Seats
+                                            </FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    className="w-[180px]"
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                {/* Date Picker */}
+                                <FormField
+                                    control={form.control}
+                                    name="date"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Date</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    type="date"
+                                                    className="w-full"
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <Button
+                                    className="mt-4 w-fit self-end"
+                                    type="submit"
+                                >
+                                    Reserve
+                                </Button>
+                            </form>
+                        </Form>
                     </CardContent>
                 </Card>
             </MaxWidthWrapper>

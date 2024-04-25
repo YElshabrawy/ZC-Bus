@@ -28,6 +28,7 @@ export default function Home() {
                 <h1 className="text-3xl font-semibold mb-4">
                     Hello, <span className="text-primary">Youssef</span> 🎉
                 </h1>
+                {/* Balance card */}
                 <div className="mb-4">
                     <Card x-chunk="dashboard-01-chunk-0" className="">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -41,6 +42,7 @@ export default function Home() {
                         </CardContent>
                     </Card>
                 </div>
+                {/* CTA buttons */}
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <Card x-chunk="dashboard-01-chunk-0" className="">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -72,9 +74,12 @@ export default function Home() {
                             <p className="text-sm text-muted-foreground">
                                 Reserve a trip to get a seat on the bus
                             </p>
-                            <Button className="mt-4 w-fit self-end">
-                                Reserve
-                            </Button>
+                            <Link
+                                className="mt-4 w-fit self-end"
+                                href="/reserve"
+                            >
+                                <Button>Reserve</Button>
+                            </Link>
                         </CardContent>
                     </Card>
                 </div>
