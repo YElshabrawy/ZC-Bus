@@ -16,7 +16,7 @@ export default function Navbar() {
     };
 
     return (
-        <nav className="w-full py-4 px-0 md:px-8 shadow-md bg-white dark:bg-gray-800 sticky top-0 z-50">
+        <nav className="w-full py-4 px-0 md:px-8 shadow-md bg-white dark:bg-background sticky top-0 z-50 dark:border-b">
             <MaxWidthWrapper className="flex justify-between items-center">
                 <Link className="flex items-center" href="/">
                     <Image
