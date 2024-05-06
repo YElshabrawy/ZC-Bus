@@ -1,7 +1,7 @@
 import { DollarSign } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/lib/nextauth';
 
 const HomeHeader = async () => {
     const session = await getServerSession(authOptions);

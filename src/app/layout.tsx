@@ -10,7 +10,7 @@ import { Toaster } from '@/components/ui/toaster';
 import Providers from '@/components/custom/Providers';
 import { getServerSession } from 'next-auth';
 import SessionProvider from '@/components/custom/SessionProvider';
-import { authOptions } from './api/auth/[...nextauth]/route';
+import { authOptions } from '@/lib/nextauth';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
