@@ -1,8 +1,7 @@
 import axios from '@/lib/axios';
-import NextAuth, { AuthOptions, User } from 'next-auth';
-import { JWT } from 'next-auth/jwt';
+import NextAuth, { AuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-export const authOptions: AuthOptions = {
+const authOptions: AuthOptions = {
     // Configure one or more authentication providers
     providers: [
         CredentialsProvider({
