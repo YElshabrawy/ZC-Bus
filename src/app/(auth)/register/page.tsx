@@ -16,6 +16,12 @@ import {
     FormLabel,
     FormMessage,
 } from '@/components/ui/form';
+import axios from '@/lib/axios';
+import { AxiosError } from 'axios';
+import { useState } from 'react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { AlertCircle } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
     first_name: z
@@ -49,31 +55,39 @@ export default function Register() {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
     });
-    function onSubmit(values: z.infer<typeof formSchema>) {
-        // post to the api, get the response or the errors and set them accordingly
-        fetch('http://40.118.26.223/user/registration/', {
-            method: 'POST',
-            body: JSON.stringify(values),
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-            .then((res) => {
-                if (res.ok) {
-                    return res.json();
-                } else {
-                    return res.json().then((data) => {
-                        console.log(data);
-                        // throw new Error(data.error);
-                    });
-                }
-            })
-            .then((data) => {
-                console.log(data);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+    const router = useRouter();
+    const [errorMsg, setErrorMsg] = useState<string | null>(null);
+    async function onSubmit(values: z.infer<typeof formSchema>) {
+        try {
+            await axios.post('user/registration/', values);
+            router.push('/login');
+        } catch (error) {
+            if (error instanceof AxiosError) {
+                const err = error as AxiosError;
+                console.error(err.message);
+                console.log(err.response?.data);
+                // now for each error add it to the form field according to its name
+                Object.entries(
+                    err.response?.data as { [key: string]: unknown }
+                ).forEach(([key, value]) => {
+                    // check if key = one of the form names
+                    if (
+                        formSchema.shape[key as keyof typeof formSchema.shape]
+                    ) {
+                        form.setError(key as keyof typeof formSchema.shape, {
+                            type: 'manual',
+                            message: (value as string[])[0] ?? '',
+                        });
+                    } else {
+                        setErrorMsg((value as string[])[0] ?? '');
+                    }
+                });
+            } else {
+                console.log(error);
+            }
+        }
+
+        // redirect('/login');
     }
     return (
         <div className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[89.6vh]">
@@ -85,6 +99,13 @@ export default function Register() {
                             Enter your information to create an account
                         </p>
                     </div>
+                    {!!errorMsg && (
+                        <Alert variant="destructive">
+                            <AlertCircle className="h-4 w-4" />
+                            <AlertTitle>Error</AlertTitle>
+                            <AlertDescription>{errorMsg}</AlertDescription>
+                        </Alert>
+                    )}
                     <Form {...form}>
                         <div className="">
                             <form onSubmit={form.handleSubmit(onSubmit)}>

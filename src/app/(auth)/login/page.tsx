@@ -20,8 +20,8 @@ import { signIn, useSession } from 'next-auth/react';
 import { AlertCircle } from 'lucide-react';
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { useEffect, useState } from 'react';
-import { redirect, useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { redirect } from 'next/navigation';
 
 const formSchema = z.object({
     email: z.string().email(),
