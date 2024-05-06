@@ -1,4 +1,5 @@
 import axios from '@/lib/axios';
+import { AxiosError } from 'axios';
 import NextAuth, { AuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 const authOptions: AuthOptions = {
@@ -38,7 +39,8 @@ const authOptions: AuthOptions = {
                         // You can also Reject this callback with an Error thus the user will be sent to the error page with the error message as a query parameter
                     }
                 } catch (e) {
-                    console.log('error', e);
+                    const error = e as AxiosError;
+                    console.log('error', error.message);
                 }
             },
         }),

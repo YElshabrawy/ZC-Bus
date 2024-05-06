@@ -20,7 +20,7 @@ import { signIn, useSession } from 'next-auth/react';
 import { AlertCircle } from 'lucide-react';
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { redirect, useRouter } from 'next/navigation';
 
 const formSchema = z.object({
@@ -34,6 +34,7 @@ interface IProps {
 
 export default function Login(props: IProps) {
     const session = useSession();
+    const [errorMsg, setErrorMsg] = useState<string | null>(null);
     if (!!session && !!session.data?.user) {
         redirect('/');
     }
@@ -42,12 +43,19 @@ export default function Login(props: IProps) {
     });
     async function onSubmit(values: z.infer<typeof formSchema>) {
         const { email, password } = values;
-        signIn('credentials', {
+        const res = await signIn('credentials', {
             email,
             password,
-            redirect: true,
+            redirect: false,
             callbackUrl: props.searchParams?.callbackUrl ?? '/',
         });
+        if (res?.error) {
+            if (res.status === 401) {
+                setErrorMsg('Invalid email or password');
+            } else {
+                setErrorMsg(res.error);
+            }
+        }
     }
 
     return (
@@ -61,13 +69,11 @@ export default function Login(props: IProps) {
                             account
                         </p>
                     </div>
-                    {props.searchParams?.error === 'CredentialsSignin' && (
+                    {!!errorMsg && (
                         <Alert variant="destructive">
                             <AlertCircle className="h-4 w-4" />
                             <AlertTitle>Error</AlertTitle>
-                            <AlertDescription>
-                                Invalid email or password
-                            </AlertDescription>
+                            <AlertDescription>{errorMsg}</AlertDescription>
                         </Alert>
                     )}
                     <Form {...form}>
@@ -97,7 +103,7 @@ export default function Login(props: IProps) {
                                             Password
                                         </Label>
                                         <Link
-                                            href="/forgot-password"
+                                            href={'#'}
                                             className="ml-auto inline-block text-sm underline"
                                         >
                                             Forgot your password?
