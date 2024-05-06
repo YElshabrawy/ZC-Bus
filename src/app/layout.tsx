@@ -6,7 +6,8 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { Container } from 'postcss';
 import MaxWidthWrapper from '@/components/custom/MaxWidthWrapper';
 import Navbar from '@/components/custom/Navbar';
-import { Toaster } from '@/components/ui/toaster';
+import { Toaster } from '@/components/ui/sonner';
+import { error } from 'console';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -38,7 +39,13 @@ export default function RootLayout({
                         <Navbar />
                         <div className="flex-grow flex-1">{children}</div>
                     </main>
-                    <Toaster />
+                    <Toaster
+                        toastOptions={{
+                            classNames: {
+                                error: 'text-red-500',
+                            },
+                        }}
+                    />
                 </ThemeProvider>
             </body>
             {/* <body

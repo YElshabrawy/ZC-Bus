@@ -16,6 +16,9 @@ import {
     FormLabel,
     FormMessage,
 } from '@/components/ui/form';
+import authStore from '@/lib/store';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
     email: z.string().email(),
@@ -26,6 +29,12 @@ export default function Login() {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
     });
+    const router = useRouter();
+    const { login, user } = authStore();
+    // if the user is already logged in, redirect to the dashboard
+    if (user) {
+        router.push('/');
+    }
     async function onSubmit(values: z.infer<typeof formSchema>) {
         const { email, password } = values;
         const res = await fetch('/api/login/', {
@@ -35,14 +44,27 @@ export default function Login() {
             },
             body: JSON.stringify({ email, password }),
         });
-        console.log(res);
-        console.log(values);
+        if (res.ok) {
+            // add user data to the store
+            console.log('before login', user);
+            const data = await res.json();
+            login(data.user);
+            console.log('after login', user);
+            // redirect to the dashboard
+        } else {
+            // show an error message
+            if (res.status === 401) {
+                toast.error('Invalid email or password');
+            } else {
+                toast.error('Something went wrong');
+            }
+        }
     }
     async function refreshToken() {
-        const res = await fetch('/api/refresh/', {
-            method: 'POST',
-        });
-        console.log(res);
+        // const res = await fetch('/api/refresh/', {
+        //     method: 'POST',
+        // });
+        console.log(user);
     }
     return (
         <div className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[89.6vh]">
