@@ -56,7 +56,6 @@ export default function Home() {
         // },
     });
     function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log(values);
         toast({
             title: 'You submitted the following values:',
             description: (

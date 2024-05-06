@@ -8,6 +8,8 @@ import MaxWidthWrapper from '@/components/custom/MaxWidthWrapper';
 import Navbar from '@/components/custom/Navbar';
 import { Toaster } from '@/components/ui/toaster';
 import Providers from '@/components/custom/Providers';
+import { getServerSession } from 'next-auth';
+import SessionProvider from '@/components/custom/SessionProvider';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -16,11 +18,12 @@ export const metadata: Metadata = {
     description: '',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) {
+    const session = await getServerSession();
     return (
         <html lang="en">
             <body
@@ -29,7 +32,7 @@ export default function RootLayout({
                     'relative h-full font-sans antialiased'
                 )}
             >
-                <Providers>
+                <SessionProvider session={session}>
                     <ThemeProvider
                         attribute="class"
                         defaultTheme="system"
@@ -42,7 +45,7 @@ export default function RootLayout({
                         </main>
                         <Toaster />
                     </ThemeProvider>
-                </Providers>
+                </SessionProvider>
             </body>
         </html>
     );

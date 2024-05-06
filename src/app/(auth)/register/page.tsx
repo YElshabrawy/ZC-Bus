@@ -50,7 +50,6 @@ export default function Register() {
         resolver: zodResolver(formSchema),
     });
     function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log(values);
         // post to the api, get the response or the errors and set them accordingly
         fetch('http://40.118.26.223/user/registration/', {
             method: 'POST',
@@ -64,7 +63,6 @@ export default function Register() {
                     return res.json();
                 } else {
                     return res.json().then((data) => {
-                        console.log('hopa');
                         console.log(data);
                         // throw new Error(data.error);
                     });
