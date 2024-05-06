@@ -46,7 +46,7 @@ export default function Login(props: IProps) {
         const res = await signIn('credentials', {
             email,
             password,
-            redirect: false,
+            redirect: true,
             callbackUrl: props.searchParams?.callbackUrl ?? '/',
         });
         if (res?.error) {
@@ -69,11 +69,13 @@ export default function Login(props: IProps) {
                             account
                         </p>
                     </div>
-                    {!!errorMsg && (
+                    {!!props.searchParams?.error && (
                         <Alert variant="destructive">
                             <AlertCircle className="h-4 w-4" />
                             <AlertTitle>Error</AlertTitle>
-                            <AlertDescription>{errorMsg}</AlertDescription>
+                            <AlertDescription>
+                                {props.searchParams?.error}
+                            </AlertDescription>
                         </Alert>
                     )}
                     <Form {...form}>

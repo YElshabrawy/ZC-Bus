@@ -10,6 +10,7 @@ import { Toaster } from '@/components/ui/toaster';
 import Providers from '@/components/custom/Providers';
 import { getServerSession } from 'next-auth';
 import SessionProvider from '@/components/custom/SessionProvider';
+import { authOptions } from './api/auth/[...nextauth]/route';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -23,7 +24,7 @@ export default async function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     return (
         <html lang="en">
             <body

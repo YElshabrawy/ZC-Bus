@@ -2,7 +2,7 @@ import axios from '@/lib/axios';
 import { AxiosError } from 'axios';
 import NextAuth, { AuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-const authOptions: AuthOptions = {
+export const authOptions: AuthOptions = {
     // Configure one or more authentication providers
     providers: [
         CredentialsProvider({
@@ -23,6 +23,7 @@ const authOptions: AuthOptions = {
             async authorize(credentials, req) {
                 // Add logic here to look up the user from the credentials supplied
                 if (!credentials?.email || !credentials?.password) return null;
+                console.log('authorize', credentials);
                 try {
                     const res = await axios.post('/user/login/', {
                         email: credentials?.email,
@@ -51,7 +52,6 @@ const authOptions: AuthOptions = {
         },
         async session({ session, token, user }) {
             session.user = token as any;
-
             return session;
         },
     },
