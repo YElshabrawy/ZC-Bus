@@ -1,19 +1,13 @@
-'use client';
-
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Moon, Sun } from 'lucide-react';
-import { useTheme } from 'next-themes';
 import MaxWidthWrapper from './MaxWidthWrapper';
-import useHasMounted from '@/lib/helpers';
+import ToggleTheme from './ToggleTheme';
+import { getServerSession } from 'next-auth';
+import LoginBtn from './LoginBtn';
 
-export default function Navbar() {
-    // const { setTheme } = useTheme();
-    const { theme, setTheme } = useTheme();
-    const toggleTheme = () => {
-        setTheme(theme === 'light' ? 'dark' : 'light');
-    };
+export default async function Navbar() {
+    const session = await getServerSession();
 
     return (
         <nav className="w-full py-4 px-0 md:px-8 shadow-md bg-white dark:bg-background sticky top-0 z-50 dark:border-b">
@@ -28,24 +22,11 @@ export default function Navbar() {
                     {/* <h1 className="text-xl font-semibold">ZC Bus</h1> */}
                 </Link>
                 <div className="flex items-center space-x-4">
-                    <Link href="/login">
+                    {/* <Link href="/login">
                         <Button>Login</Button>
-                    </Link>
-                    {useHasMounted() && (
-                        <Button
-                            className="outline-none"
-                            variant="outline"
-                            size="icon"
-                            onClick={toggleTheme}
-                        >
-                            {theme !== 'light' ? (
-                                <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                            ) : (
-                                <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                            )}
-                            <span className="sr-only">Toggle theme</span>
-                        </Button>
-                    )}
+                    </Link> */}
+                    <LoginBtn session={session} />
+                    <ToggleTheme />
                 </div>
             </MaxWidthWrapper>
         </nav>
