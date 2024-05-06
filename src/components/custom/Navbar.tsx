@@ -7,9 +7,11 @@ import { Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import MaxWidthWrapper from './MaxWidthWrapper';
 import useHasMounted from '@/lib/helpers';
+import { signIn, signOut, useSession } from 'next-auth/react';
 
 export default function Navbar() {
-    // const { setTheme } = useTheme();
+    const { data: session } = useSession();
+    console.log({ session });
     const { theme, setTheme } = useTheme();
     const toggleTheme = () => {
         setTheme(theme === 'light' ? 'dark' : 'light');
@@ -28,9 +30,16 @@ export default function Navbar() {
                     {/* <h1 className="text-xl font-semibold">ZC Bus</h1> */}
                 </Link>
                 <div className="flex items-center space-x-4">
-                    <Link href="/login">
+                    {/* <Link href="/login">
                         <Button>Login</Button>
-                    </Link>
+                    </Link> */}
+                    {session?.user ? (
+                        <Button onClick={() => signOut({ callbackUrl: '/' })}>
+                            Log out
+                        </Button>
+                    ) : (
+                        <Button onClick={() => signIn()}>Login</Button>
+                    )}
                     {useHasMounted() && (
                         <Button
                             className="outline-none"
