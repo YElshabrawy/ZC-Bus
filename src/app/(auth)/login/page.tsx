@@ -21,7 +21,7 @@ import { AlertCircle } from 'lucide-react';
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useState } from 'react';
-import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
     email: z.string().email(),
@@ -34,9 +34,10 @@ interface IProps {
 
 export default function Login(props: IProps) {
     const session = useSession();
+    const router = useRouter();
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
     if (!!session && !!session.data?.user) {
-        redirect('/');
+        router.push(props.searchParams?.callbackUrl ?? '/');
     }
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -46,7 +47,7 @@ export default function Login(props: IProps) {
         const res = await signIn('credentials', {
             email,
             password,
-            redirect: true,
+            redirect: false,
             callbackUrl: props.searchParams?.callbackUrl ?? '/',
         });
         if (res?.error) {
@@ -55,7 +56,11 @@ export default function Login(props: IProps) {
             } else {
                 setErrorMsg(res.error);
             }
+            return;
+        } else {
+            // router.push(props.searchParams?.callbackUrl ?? '/');
         }
+        router.push(props.searchParams?.callbackUrl ?? '/');
     }
 
     return (
@@ -69,17 +74,18 @@ export default function Login(props: IProps) {
                             account
                         </p>
                     </div>
-                    {!!props.searchParams?.error && (
+                    {!!errorMsg && (
                         <Alert variant="destructive">
                             <AlertCircle className="h-4 w-4" />
                             <AlertTitle>Error</AlertTitle>
-                            <AlertDescription>
-                                {props.searchParams?.error}
-                            </AlertDescription>
+                            <AlertDescription>{errorMsg}</AlertDescription>
                         </Alert>
                     )}
                     <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)}>
+                        <form
+                            onSubmit={form.handleSubmit(onSubmit)}
+                            onChange={() => setErrorMsg(null)}
+                        >
                             <div className="grid gap-4">
                                 <div className="grid gap-2">
                                     <FormField

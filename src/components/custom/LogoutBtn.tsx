@@ -1,12 +1,12 @@
 'use client';
 import { Button } from '../ui/button';
-import { signIn } from 'next-auth/react';
+import { signOut } from 'next-auth/react';
 
-function LoginBtn() {
+function LogoutBtn() {
     // if (session && session.user) {
     //     return <Button onClick={() => signOut()}>Sign out</Button>;
     // }
-    return <Button onClick={() => signIn()}>Log in</Button>;
+    return <Button onClick={() => signOut()}>Sign out</Button>;
 }
 
-export default LoginBtn;
+export default LogoutBtn;

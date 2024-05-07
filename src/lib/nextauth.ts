@@ -24,7 +24,6 @@ export const authOptions: AuthOptions = {
             async authorize(credentials, req) {
                 // Add logic here to look up the user from the credentials supplied
                 if (!credentials?.email || !credentials?.password) return null;
-                console.log('authorize', credentials);
                 try {
                     const res = await axios.post('/user/login/', {
                         email: credentials?.email,
