@@ -94,14 +94,11 @@ export default function Register() {
             const otp = await axios.post('user/resend-otp/', {
                 email: values.email,
             });
-            console.log('sent otp', otp);
             setOpenOtp(true);
             // router.push('/login');
         } catch (error) {
             if (error instanceof AxiosError) {
                 const err = error as AxiosError;
-                console.error(err.message);
-                console.log(err.response?.data);
                 // now for each error add it to the form field according to its name
                 Object.entries(
                     err.response?.data as { [key: string]: unknown }
@@ -134,7 +131,6 @@ export default function Register() {
                 otp: values.pin,
             });
             if (res.status === 200) {
-                console.log('OTP verified');
                 setOpenOtp(false);
                 router.push('/login');
             }
