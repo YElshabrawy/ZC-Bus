@@ -22,6 +22,7 @@ import { AlertCircle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { PasswordInput } from '@/components/custom/PasswordInput';
 
 const formSchema = z.object({
     email: z.string().email(),
@@ -124,8 +125,8 @@ export default function Login(props: IProps) {
                                             <FormItem>
                                                 {/* <FormLabel>Password</FormLabel> */}
                                                 <FormControl>
-                                                    <Input
-                                                        type="password"
+                                                    <PasswordInput
+                                                        placeholder=""
                                                         {...field}
                                                     />
                                                 </FormControl>
