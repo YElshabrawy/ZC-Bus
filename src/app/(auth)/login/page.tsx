@@ -112,7 +112,7 @@ export default function Login(props: IProps) {
                                             Password
                                         </Label>
                                         <Link
-                                            href={'#'}
+                                            href={'/forget-password'}
                                             className="ml-auto inline-block text-sm underline"
                                         >
                                             Forgot your password?

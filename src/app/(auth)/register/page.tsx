@@ -1,7 +1,6 @@
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
-
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useForm } from 'react-hook-form';
@@ -10,7 +9,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
@@ -18,23 +16,11 @@ import {
 } from '@/components/ui/form';
 import axios from '@/lib/axios';
 import { AxiosError } from 'axios';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { PasswordInput } from '@/components/custom/PasswordInput';
-import {
-    Drawer,
-    DrawerContent,
-    DrawerDescription,
-    DrawerHeader,
-    DrawerTitle,
-} from '@/components/ui/drawer';
-import {
-    InputOTP,
-    InputOTPGroup,
-    InputOTPSlot,
-} from '@/components/ui/input-otp';
 import OTPVerificationForm from '@/components/custom/OTPVerificationForm';
 
 const formSchema = z.object({
@@ -72,6 +58,7 @@ export default function Register() {
 
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
     const [openOtp, setOpenOtp] = useState<boolean>(false);
+    const router = useRouter();
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
@@ -298,6 +285,9 @@ export default function Register() {
                 email={form.getValues('email')}
                 openOtp={openOtp}
                 setOpenOtp={setOpenOtp}
+                onSuccess={() => {
+                    router.push('/login');
+                }}
             />
         </>
     );

@@ -38,24 +38,34 @@ interface OTPVerificationFormProps {
     email: string;
     openOtp: boolean;
     setOpenOtp: React.Dispatch<React.SetStateAction<boolean>>;
+    onSuccess: () => void;
 }
 
 const OTPVerificationForm = ({
     email,
     openOtp,
     setOpenOtp,
+    onSuccess,
 }: OTPVerificationFormProps) => {
     const [resendTimer, setResendTimer] = useState(0);
     const [initialResend, setInitialResend] = useState(true);
-    const router = useRouter();
     const otpForm = useForm<z.infer<typeof OTPFormSchema>>({
         resolver: zodResolver(OTPFormSchema),
         defaultValues: {
             pin: '',
         },
     });
+    // reset everything on initial render
+    useEffect(() => {
+        if (openOtp) {
+            otpForm.reset();
+            // setResendTimer(0);
+            setInitialResend(true);
+        }
+    }, [openOtp]);
+
     async function onOTPSubmit(values: z.infer<typeof OTPFormSchema>) {
-        if (initialResend) startResendTimer();
+        // if (initialResend) startResendTimer();
         setInitialResend(false);
         try {
             const res = await axios.post('/user/verify-otp/', {
@@ -65,7 +75,12 @@ const OTPVerificationForm = ({
             });
             if (res.status === 200) {
                 setOpenOtp(false);
-                router.push('/login');
+                // reset the form
+                otpForm.reset();
+                setResendTimer(0);
+                setInitialResend(true);
+                onSuccess();
+                // router.push('/login');
             }
         } catch (error) {
             interface ErrorResponse {
@@ -90,9 +105,23 @@ const OTPVerificationForm = ({
     }
     async function resendOTP(email: string) {
         try {
+            // only send if the timer is 0
+            if (resendTimer > 0) return;
             await axios.post('user/resend-otp/', { email });
+            console.log('otp sent');
             startResendTimer(); // Start the resend timer
         } catch (error) {
+            if (error instanceof AxiosError) {
+                const err = error as AxiosError;
+                if (err.response?.status === 404) {
+                    otpForm.setError('pin', {
+                        type: 'manual',
+                        message: 'User not found',
+                    });
+                    return;
+                }
+                return;
+            }
             console.error('Error resending OTP:', error);
         }
     }
@@ -117,22 +146,36 @@ const OTPVerificationForm = ({
             resendOTP(email);
         }
     }
+
+    function sendOTP() {
+        setInitialResend(false);
+        resendOTP(email);
+    }
     return (
         <Drawer open={openOtp} onOpenChange={setOpenOtp}>
             <DrawerContent>
                 <div className="mx-auto w-full max-w-sm flex flex-col items-center">
-                    <DrawerHeader>
+                    <DrawerHeader className="flex flex-col items-center text-center">
                         <DrawerTitle>Verify your email address</DrawerTitle>
-                        <DrawerDescription>
-                            We have sent a verification code to your email
-                            address. Please enter the code below.
+                        <DrawerDescription className="text-center">
+                            We will send a one-time password to your email:{' '}
+                            <span className="text-primary">{email}</span>
                         </DrawerDescription>
                     </DrawerHeader>
                     <Form {...otpForm}>
                         <form
                             onSubmit={otpForm.handleSubmit(onOTPSubmit)}
-                            className="w-full space-y-6 flex flex-col items-center justify-center"
+                            className="w-full space-y-6 flex flex-col items-center justify-center pb-5"
                         >
+                            <Button
+                                disabled={resendTimer > 0}
+                                onClick={handleResendOTP}
+                                type="button"
+                            >
+                                {resendTimer > 0
+                                    ? `Resend OTP in ${resendTimer} seconds`
+                                    : 'Send OTP'}
+                            </Button>
                             <FormField
                                 control={otpForm.control}
                                 name="pin"
@@ -158,19 +201,9 @@ const OTPVerificationForm = ({
                                 )}
                             />
 
-                            <div className="w-full flex items-center justify-between pb-5">
-                                <Button type="submit">Verify</Button>
-                                <Button
-                                    disabled={resendTimer > 0 || initialResend}
-                                    variant={'secondary'}
-                                    onClick={handleResendOTP}
-                                    type="button"
-                                >
-                                    {resendTimer > 0
-                                        ? `Resend OTP in ${resendTimer} seconds`
-                                        : 'Resend OTP'}
-                                </Button>
-                            </div>
+                            <Button className="w-full" type="submit">
+                                Verify
+                            </Button>
                         </form>
                     </Form>
                 </div>
