@@ -105,7 +105,6 @@ const OTPVerificationForm = ({
             // only send if the timer is 0
             if (resendTimer > 0) return;
             await axios.post('user/resend-otp/', { email });
-            console.log('otp sent');
             startResendTimer(); // Start the resend timer
         } catch (error) {
             if (error instanceof AxiosError) {

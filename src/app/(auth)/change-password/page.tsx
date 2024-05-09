@@ -48,7 +48,7 @@ export default function ForgetPassword() {
         try {
             const uid = session.data?.user.user.id;
             if (!uid) {
-                console.log('user not found lol');
+                throw new Error('User ID not found');
             }
             await axiosProtected.patch(`/user/${uid}/change-password/`, {
                 old_password: values.oldPassword,

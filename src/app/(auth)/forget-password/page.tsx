@@ -189,7 +189,6 @@ export default function ForgetPassword() {
                 setOpenOtp={setOpenOtp}
                 email={form.getValues('email')}
                 onSuccess={() => {
-                    console.log('success');
                     setVerified(true);
                 }}
             />
