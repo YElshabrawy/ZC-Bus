@@ -34,9 +34,9 @@ interface IProps {
 }
 
 export default function Login(props: IProps) {
-    const session = useSession();
-    const router = useRouter();
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
+    const router = useRouter();
+    const session = useSession();
     if (!!session && !!session.data?.user) {
         router.push(props.searchParams?.callbackUrl ?? '/');
     }

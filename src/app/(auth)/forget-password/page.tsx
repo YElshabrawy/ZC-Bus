@@ -1,10 +1,7 @@
 'use client';
-import Image from 'next/image';
-import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -24,36 +21,52 @@ import { useRouter } from 'next/navigation';
 import axios from '@/lib/axios';
 import OTPVerificationForm from '@/components/custom/OTPVerificationForm';
 import { AxiosError } from 'axios';
+import { PasswordInput } from '@/components/custom/PasswordInput';
+import { cn } from '@/lib/utils';
+import { useSession } from 'next-auth/react';
 
 const formSchema = z.object({
     email: z.string().email(),
+    newPassword: z.string().min(8),
+    confirmNewPassword: z.string().min(8),
 });
 
-interface IProps {
-    searchParams?: Record<'callbackUrl' | 'error', string>;
-}
-
-export default function ForgetPassword(props: IProps) {
+export default function ForgetPassword() {
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
     const [openOtp, setOpenOtp] = useState<boolean>(false);
+    const [verified, setVerified] = useState<boolean>(false);
+    const router = useRouter();
+    const session = useSession();
+    if (!!session && !!session.data?.user) {
+        router.push('/');
+    }
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
     });
+
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            // await axios.post('user/resend-otp/', {
-            //     email: values.email,
-            // });
-            setOpenOtp(true);
+            await axios.patch('/user/update-password/', {
+                email: values.email,
+                password: values.newPassword,
+                confirm_password: values.confirmNewPassword,
+            });
+            router.push('/login');
         } catch (error) {
             if (error instanceof AxiosError) {
                 const err = error as AxiosError;
-                if (err.response?.status === 404) {
-                    setErrorMsg('User not found');
+                if (err.response?.status === 400) {
+                    const dta = err.response?.data as {
+                        [key: string]: unknown;
+                    };
+                    setErrorMsg((dta.non_field_errors as string[])[0]);
                 } else {
-                    setErrorMsg('Something went wrong');
+                    setErrorMsg('An error occurred');
                 }
+            } else {
+                setErrorMsg('An error occurred');
             }
+            console.error("ForgetPassword's onSubmit error: ", error);
         }
     }
 
@@ -101,20 +114,70 @@ export default function ForgetPassword(props: IProps) {
                                                 </FormItem>
                                             )}
                                         />
-                                    </div>
+                                        <Button
+                                            type="button"
+                                            className="w-full"
+                                            onClick={() => {
+                                                setOpenOtp(true);
+                                            }}
+                                        >
+                                            Send OTP
+                                        </Button>
 
-                                    <Button type="submit" className="w-full">
-                                        Send OTP
-                                    </Button>
-                                </div>
-                                <div className="mt-4 text-center text-sm">
-                                    Don&apos;t have an account?{' '}
-                                    <Link
-                                        href="/register"
-                                        className="underline"
-                                    >
-                                        Sign up
-                                    </Link>
+                                        <div
+                                            className={cn('space-y-4', {
+                                                hidden: !verified,
+                                            })}
+                                        >
+                                            <FormField
+                                                control={form.control}
+                                                name="newPassword"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>
+                                                            New Password
+                                                        </FormLabel>
+                                                        <FormControl>
+                                                            {/* <Input
+                                                        type="password"
+                                                        placeholder=""
+                                                        {...field}
+                                                    /> */}
+                                                            <PasswordInput
+                                                                placeholder=""
+                                                                {...field}
+                                                            />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={form.control}
+                                                name="confirmNewPassword"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>
+                                                            Confirm New Password
+                                                        </FormLabel>
+                                                        <FormControl>
+                                                            <PasswordInput
+                                                                placeholder=""
+                                                                {...field}
+                                                            />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <Button
+                                                type="submit"
+                                                className="w-full"
+                                            >
+                                                Reset Password
+                                            </Button>
+                                        </div>
+                                    </div>
                                 </div>
                             </form>
                         </Form>
@@ -127,6 +190,7 @@ export default function ForgetPassword(props: IProps) {
                 email={form.getValues('email')}
                 onSuccess={() => {
                     console.log('success');
+                    setVerified(true);
                 }}
             />
         </>

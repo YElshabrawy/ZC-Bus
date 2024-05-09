@@ -48,7 +48,6 @@ const OTPVerificationForm = ({
     onSuccess,
 }: OTPVerificationFormProps) => {
     const [resendTimer, setResendTimer] = useState(0);
-    const [initialResend, setInitialResend] = useState(true);
     const otpForm = useForm<z.infer<typeof OTPFormSchema>>({
         resolver: zodResolver(OTPFormSchema),
         defaultValues: {
@@ -60,13 +59,12 @@ const OTPVerificationForm = ({
         if (openOtp) {
             otpForm.reset();
             // setResendTimer(0);
-            setInitialResend(true);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [openOtp]);
 
     async function onOTPSubmit(values: z.infer<typeof OTPFormSchema>) {
         // if (initialResend) startResendTimer();
-        setInitialResend(false);
         try {
             const res = await axios.post('/user/verify-otp/', {
                 // email: form.getValues('email'),
@@ -78,7 +76,6 @@ const OTPVerificationForm = ({
                 // reset the form
                 otpForm.reset();
                 setResendTimer(0);
-                setInitialResend(true);
                 onSuccess();
                 // router.push('/login');
             }
@@ -148,7 +145,6 @@ const OTPVerificationForm = ({
     }
 
     function sendOTP() {
-        setInitialResend(false);
         resendOTP(email);
     }
     return (

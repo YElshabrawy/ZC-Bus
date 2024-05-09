@@ -64,11 +64,7 @@ export default function Register() {
         try {
             await axios.post('user/registration/', values);
             // send otp and open otp drawer
-            const otp = await axios.post('user/resend-otp/', {
-                email: values.email,
-            });
             setOpenOtp(true);
-            // router.push('/login');
         } catch (error) {
             if (error instanceof AxiosError) {
                 const err = error as AxiosError;
