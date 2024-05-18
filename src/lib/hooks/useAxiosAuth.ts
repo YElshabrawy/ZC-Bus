@@ -2,14 +2,14 @@
 import { useSession } from 'next-auth/react';
 import { useEffect } from 'react';
 import { useRefreshToken } from './useRefreshToken';
-import { axiosAuth } from '../axios';
+import axios from '../axios';
 
 const useAxiosAuth = () => {
     const { data: session } = useSession();
     const refreshToken = useRefreshToken();
 
     useEffect(() => {
-        const requestIntercept = axiosAuth.interceptors.request.use(
+        const requestIntercept = axios.interceptors.request.use(
             (config) => {
                 if (!config.headers['Authorization']) {
                     config.headers[
@@ -21,7 +21,7 @@ const useAxiosAuth = () => {
             (error) => Promise.reject(error)
         );
 
-        const responseIntercept = axiosAuth.interceptors.response.use(
+        const responseIntercept = axios.interceptors.response.use(
             (response) => response,
             async (error) => {
                 const prevRequest = error?.config;
@@ -31,19 +31,19 @@ const useAxiosAuth = () => {
                     prevRequest.headers[
                         'Authorization'
                     ] = `Bearer ${session?.user?.access}`;
-                    return axiosAuth(prevRequest);
+                    return axios(prevRequest);
                 }
                 return Promise.reject(error);
             }
         );
 
         return () => {
-            axiosAuth.interceptors.request.eject(requestIntercept);
-            axiosAuth.interceptors.response.eject(responseIntercept);
+            axios.interceptors.request.eject(requestIntercept);
+            axios.interceptors.response.eject(responseIntercept);
         };
     }, [session, refreshToken]);
 
-    return axiosAuth;
+    return axios;
 };
 
 export default useAxiosAuth;

@@ -17,7 +17,7 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { DollarSign, BusIcon, Ticket, ArrowUpRight } from 'lucide-react';
+import { CalendarSearch, BusIcon, Ticket, ArrowUpRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -27,6 +27,26 @@ export default function Home() {
             <MaxWidthWrapper className="mt-8">
                 <HomeHeader />
                 {/* CTA buttons */}
+                <Card x-chunk="dashboard-01-chunk-0" className="my-4">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-lg font-medium">
+                            Show All Bus Routes
+                        </CardTitle>
+                        <CalendarSearch className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent className="flex flex-col">
+                        {/* description */}
+                        <p className="text-sm text-muted-foreground">
+                            Explore all available bus routes
+                        </p>
+                        <Link
+                            className="mt-4 w-fit self-end"
+                            href="/bus/bus-routes"
+                        >
+                            <Button>Discover</Button>
+                        </Link>
+                    </CardContent>
+                </Card>
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <Card x-chunk="dashboard-01-chunk-0" className="">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -49,7 +69,7 @@ export default function Home() {
                             </Link>
                         </CardContent>
                     </Card>
-                    <Card x-chunk="dashboard-01-chunk-0" className="">
+                    <Card x-chunk="dashboard-01-chunk-1" className="">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-lg font-medium">
                                 Reserve a trip
