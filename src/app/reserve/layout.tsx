@@ -23,7 +23,7 @@ export default function RootLayout({
             <Breadcrumb className="mb-4">
                 <BreadcrumbList>
                     <BreadcrumbItem>
-                        <BreadcrumbLink>
+                        <BreadcrumbLink asChild>
                             <Link href="/">Home</Link>
                         </BreadcrumbLink>
                     </BreadcrumbItem>
