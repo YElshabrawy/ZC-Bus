@@ -1,6 +1,5 @@
 import HomeHeader from '@/components/custom/HomeHeader';
 import MaxWidthWrapper from '@/components/custom/MaxWidthWrapper';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
     Card,
@@ -17,11 +16,63 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { CalendarSearch, BusIcon, Ticket, ArrowUpRight } from 'lucide-react';
-import Image from 'next/image';
+import { authOptions } from '@/lib/nextauth';
+import {
+    CalendarSearch,
+    BusIcon,
+    Ticket,
+    ArrowUpRight,
+    Bus,
+} from 'lucide-react';
+import { getServerSession } from 'next-auth';
 import Link from 'next/link';
 
-export default function Home() {
+const SubscribeButton = () => {
+    return (
+        <Card x-chunk="dashboard-01-chunk-0" className="my-4">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-lg font-medium">
+                    Show All Bus Routes
+                </CardTitle>
+                <CalendarSearch className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent className="flex flex-col">
+                {/* description */}
+                <p className="text-sm text-muted-foreground">
+                    Explore all available bus routes
+                </p>
+                <Link className="mt-4 w-fit self-end" href="/bus/bus-routes">
+                    <Button>Discover</Button>
+                </Link>
+            </CardContent>
+        </Card>
+    );
+};
+
+export default async function Home() {
+    const session = await getServerSession(authOptions);
+    if (!session) {
+        return (
+            <MaxWidthWrapper className="mt-8">
+                <h1 className="text-2xl font-semibold">Welcome to ZC Bus</h1>
+                <p className="text-sm text-muted-foreground">
+                    Please sign in to continue
+                </p>
+                <SubscribeButton />
+                {/* Animated bus from right to left repeatedly and a button to login */}
+                <div className="flex flex-col items-center justify-center mt-8">
+                    <div className="overflow-hidden w-full">
+                        <div className="flex animate-bus-move">
+                            <span className="text-primary">
+                                Login for more...
+                            </span>
+                            <BusIcon className="text-primary" />
+                        </div>
+                    </div>
+                </div>
+            </MaxWidthWrapper>
+        );
+    }
     return (
         <>
             <MaxWidthWrapper className="mt-8">

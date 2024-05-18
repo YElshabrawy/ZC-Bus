@@ -1,13 +1,5 @@
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import axios from '@/lib/axios';
 import { TBusRoute } from '@/types/bus';
-import {
-    Carousel,
-    CarouselContent,
-    CarouselItem,
-    CarouselNext,
-    CarouselPrevious,
-} from '@/components/ui/carousel';
 import { BusRoutesCarosel } from '@/components/custom/BusRoutesCarosel';
 
 const fetchBusRoutes = async () => {
