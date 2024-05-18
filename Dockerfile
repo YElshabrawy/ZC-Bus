@@ -41,15 +41,21 @@ ENV NODE_ENV production
 # ENV NEXT_TELEMETRY_DISABLED 1
 
 # Build the application
-ARG NEXT_PUBLIC_BACKEND_URL
+ARG NEXT_PUBLIC_API_URL
+ARG NEXTAUTH_SECRET
+ARG NEXTAUTH_URL
 
 # Print environment variables during build
-RUN echo "NEXT_PUBLIC_API_URL: $NEXT_PUBLIC_API_URL"
+RUN echo "NEXT_PUBLIC_API_URL before: $NEXT_PUBLIC_API_URL"
 
 # Set environment variables
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 ENV NEXTAUTH_SECRET=$NEXTAUTH_SECRET
 ENV NEXTAUTH_URL=$NEXTAUTH_URL
+
+# Print environment variables during build
+RUN echo "NEXT_PUBLIC_API_URL after: $NEXT_PUBLIC_API_URL"
+
 
 
 RUN addgroup --system --gid 1001 nodejs
