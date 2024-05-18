@@ -29,8 +29,8 @@ jobs:
               uses: docker/login-action@v2
               with:
                   registry: https://nextzcbus.azurecr.io/
-                  username: ${{ secrets.AzureAppService_ContainerUsername_681feff76c0149508a0b6c18955477be }}
-                  password: ${{ secrets.AzureAppService_ContainerPassword_a8187b024259438b88b3e90f3f6a2b91 }}
+                  username: ${{ secrets.AzureAppService_ContainerUsername_d6d06beace0e4b95862f7f4edab3955a }}
+                  password: ${{ secrets.AzureAppService_ContainerPassword_1009455af7a8415f9619b4c23cee9265 }}
 
             - name: Build and push container image to registry
               uses: docker/build-push-action@v5
@@ -38,18 +38,12 @@ jobs:
                   context: .
                   platforms: linux/amd64,linux/arm64
                   push: true
-                  tags: nextzcbus.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_681feff76c0149508a0b6c18955477be }}/next-zcbus:${{ github.sha }}
+                  tags: nextzcbus.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_d6d06beace0e4b95862f7f4edab3955a }}/next-zcbus:${{ github.sha }}
                   file: ./Dockerfile
                   build-args: |
                       NEXT_PUBLIC_API_URL=${{ env.NEXT_PUBLIC_API_URL }}
                       NEXTAUTH_SECRET=${{ env.NEXTAUTH_SECRET }}
                       NEXTAUTH_URL=${{ env.NEXTAUTH_URL }}
-
-              #uses: docker/build-push-action@v3
-              #with:
-              #push: true
-              #tags: nextzcbus.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_681feff76c0149508a0b6c18955477be }}/next-zcbus:${{ github.sha }}
-              #file: ./Dockerfile
 
     deploy:
         runs-on: ubuntu-latest
@@ -65,5 +59,5 @@ jobs:
               with:
                   app-name: 'next-zcbus-docker'
                   slot-name: 'production'
-                  publish-profile: ${{ secrets.AzureAppService_PublishProfile_5fe29692a52c44b583cb6cbeeef51197 }}
-                  images: 'nextzcbus.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_681feff76c0149508a0b6c18955477be }}/next-zcbus:${{ github.sha }}'
+                  publish-profile: ${{ secrets.AzureAppService_PublishProfile_30d63815171443178475099442d9c67c }}
+                  images: 'nextzcbus.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_d6d06beace0e4b95862f7f4edab3955a }}/next-zcbus:${{ github.sha }}'
