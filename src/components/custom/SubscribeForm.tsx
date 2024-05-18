@@ -74,11 +74,13 @@ const SubscribeForm = ({ routes, userID }: IProps) => {
                 });
             }
         } catch (e) {
-            const err = e as AxiosError<{ detail?: string }>;
+            const err = e as AxiosError<{ non_field_errors: string[] }>;
             if (err.response) {
                 toast({
                     title: 'Error',
-                    description: err.response?.data?.detail,
+                    description:
+                        err.response?.data?.non_field_errors[0] ||
+                        'An error occurred',
                     variant: 'destructive',
                     action: (
                         <ToastAction
@@ -94,7 +96,7 @@ const SubscribeForm = ({ routes, userID }: IProps) => {
             } else {
                 toast({
                     title: 'Error',
-                    description: 'An error occurred',
+                    description: 'A server error occurred',
                     variant: 'destructive',
                     action: (
                         <ToastAction
