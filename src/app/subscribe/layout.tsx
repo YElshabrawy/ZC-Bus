@@ -17,9 +17,6 @@ export default function RootLayout({
 }>) {
     return (
         <MaxWidthWrapper className="my-8">
-            <h1 className="text-3xl font-semibold mb-4">
-                Hello, <span className="text-primary">Youssef</span> 🎉
-            </h1>
             <Breadcrumb className="mb-4">
                 <BreadcrumbList>
                     <BreadcrumbItem>
