@@ -17,3 +17,15 @@ export type TBusRoute = {
     plate_number: string;
     bus_stops: TBusStop[];
 };
+
+export type TBusTicket = {
+    id: number;
+    created_at: string;
+    modified_at: string;
+    amount_paid: string;
+    date: string;
+    destination: string;
+    user: number;
+    bus_route: number;
+    bus_offering: number;
+};
