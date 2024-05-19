@@ -17,7 +17,6 @@ import {
 } from '@/components/ui/card';
 import { Button } from '../ui/button';
 import { ArrowUpRight } from 'lucide-react';
-import Link from 'next/link';
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
 import { TBusRoute, TBusTicket } from '@/types/bus';
 import { useEffect, useState } from 'react';
@@ -87,9 +86,7 @@ const TripsTable = ({ routes }: IProps) => {
                                                 )
                                             </div>
                                             <div className="hidden text-sm text-muted-foreground md:inline">
-                                                {trip.created_at
-                                                    .split('T')[0]
-                                                    .replace(/-/g, '/')}
+                                                {trip.date.replace(/-/g, '/')}
                                             </div>
                                         </TableCell>
 
