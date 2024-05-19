@@ -91,13 +91,11 @@ const ReserveForm = ({ routes, wallet_balance }: IProps) => {
                 });
             }
         } catch (e) {
-            const err = e as AxiosError<{ non_field_errors: string[] }>;
+            const err = e as AxiosError<string[]>;
             if (err.response) {
                 toast({
                     title: 'Error',
-                    description:
-                        err.response?.data?.non_field_errors[0] ||
-                        'An error occurred',
+                    description: err.response?.data || 'An error occurred',
                     variant: 'destructive',
                     action: (
                         <ToastAction

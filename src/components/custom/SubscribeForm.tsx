@@ -28,6 +28,7 @@ import { AxiosError } from 'axios';
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
 import { ToastAction } from '../ui/toast';
 import { useRouter } from 'next/navigation';
+import { Badge } from '../ui/badge';
 
 const formSchema = z.object({
     route: z.string({
@@ -37,8 +38,9 @@ const formSchema = z.object({
 interface IProps {
     routes: TBusRoute[];
     userID: number;
+    wallet_balance: string;
 }
-const SubscribeForm = ({ routes, userID }: IProps) => {
+const SubscribeForm = ({ routes, userID, wallet_balance }: IProps) => {
     const axios = useAxiosAuth();
     const router = useRouter();
     const form = useForm<z.infer<typeof formSchema>>({
@@ -74,13 +76,11 @@ const SubscribeForm = ({ routes, userID }: IProps) => {
                 });
             }
         } catch (e) {
-            const err = e as AxiosError<{ non_field_errors: string[] }>;
+            const err = e as AxiosError<string[]>;
             if (err.response) {
                 toast({
                     title: 'Error',
-                    description:
-                        err.response?.data?.non_field_errors[0] ||
-                        'An error occurred',
+                    description: err.response?.data || 'An error occurred',
                     variant: 'destructive',
                     action: (
                         <ToastAction
@@ -113,66 +113,88 @@ const SubscribeForm = ({ routes, userID }: IProps) => {
         }
     }
     return (
-        <Card className="">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-lg font-medium">
-                    Subscribe to a Route
-                </CardTitle>
-                <BusFrontIcon className="h-4 w-4 text-muted-foreground" />
-                {/* <Ticket className="h-4 w-4 text-muted-foreground" /> */}
-            </CardHeader>
-            <CardContent>
-                <Form {...form}>
-                    <div className="">
-                        <form onSubmit={form.handleSubmit(onSubmit)}>
-                            <div className="flex flex-col space-y-4 w-full">
-                                {/* Route Select */}
-                                <FormField
-                                    control={form.control}
-                                    name="route"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Route</FormLabel>
-                                            <Select
-                                                onValueChange={field.onChange}
-                                                value={field.value}
-                                            >
-                                                <FormControl>
-                                                    <SelectTrigger>
-                                                        <SelectValue placeholder="Select a route" />
-                                                    </SelectTrigger>
-                                                </FormControl>
-                                                <FormMessage />
+        <>
+            <div className="mb-4">
+                <Card x-chunk="dashboard-01-chunk-0" className="">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0">
+                        <CardTitle className="text-lg font-medium">
+                            Balance
+                        </CardTitle>
+                        <Badge variant="outline" color="primary">
+                            EGP {wallet_balance}
+                        </Badge>
+                    </CardHeader>
+                </Card>
+            </div>
+            <Card className="">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-lg font-medium">
+                        Subscribe to a Route
+                    </CardTitle>
+                    <BusFrontIcon className="h-4 w-4 text-muted-foreground" />
+                    {/* <Ticket className="h-4 w-4 text-muted-foreground" /> */}
+                </CardHeader>
+                <CardContent>
+                    <Form {...form}>
+                        <div className="">
+                            <form onSubmit={form.handleSubmit(onSubmit)}>
+                                <div className="flex flex-col space-y-4 w-full">
+                                    {/* Route Select */}
+                                    <FormField
+                                        control={form.control}
+                                        name="route"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Route</FormLabel>
+                                                <Select
+                                                    onValueChange={
+                                                        field.onChange
+                                                    }
+                                                    value={field.value}
+                                                >
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select a route" />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <FormMessage />
 
-                                                <SelectContent>
-                                                    <SelectGroup>
-                                                        <SelectLabel>
-                                                            Routes
-                                                        </SelectLabel>
-                                                        {routes.map((route) => (
-                                                            <SelectItem
-                                                                key={route.id}
-                                                                value={route.id.toString()}
-                                                            >
-                                                                {route.code} -{' '}
-                                                                {
-                                                                    route.destination
-                                                                }
-                                                            </SelectItem>
-                                                        ))}
-                                                    </SelectGroup>
-                                                </SelectContent>
-                                            </Select>
-                                        </FormItem>
-                                    )}
-                                />
+                                                    <SelectContent>
+                                                        <SelectGroup>
+                                                            <SelectLabel>
+                                                                Routes
+                                                            </SelectLabel>
+                                                            {routes.map(
+                                                                (route) => (
+                                                                    <SelectItem
+                                                                        key={
+                                                                            route.id
+                                                                        }
+                                                                        value={route.id.toString()}
+                                                                    >
+                                                                        {
+                                                                            route.code
+                                                                        }{' '}
+                                                                        -{' '}
+                                                                        {
+                                                                            route.destination
+                                                                        }
+                                                                    </SelectItem>
+                                                                )
+                                                            )}
+                                                        </SelectGroup>
+                                                    </SelectContent>
+                                                </Select>
+                                            </FormItem>
+                                        )}
+                                    />
 
-                                {/* Submit Button */}
-                                <Button className="w-fit" type="submit">
-                                    Submit
-                                </Button>
-                                {/* Seats Input */}
-                                {/* <FormField
+                                    {/* Submit Button */}
+                                    <Button className="w-fit" type="submit">
+                                        Submit
+                                    </Button>
+                                    {/* Seats Input */}
+                                    {/* <FormField
                                         control={form.control}
                                         name="seats"
                                         render={({ field }) => (
@@ -186,12 +208,13 @@ const SubscribeForm = ({ routes, userID }: IProps) => {
                                                 <FormMessage />
                                             </FormItem>
                                         )} */}
-                            </div>
-                        </form>
-                    </div>
-                </Form>
-            </CardContent>
-        </Card>
+                                </div>
+                            </form>
+                        </div>
+                    </Form>
+                </CardContent>
+            </Card>
+        </>
     );
 };
 

@@ -25,5 +25,11 @@ export default async function Home() {
         redirect('/login');
     }
 
-    return <SubscribeForm routes={routes} userID={session.user.user.id} />;
+    return (
+        <SubscribeForm
+            routes={routes}
+            userID={session.user.user.id}
+            wallet_balance={session.user.user.wallet_balance}
+        />
+    );
 }
